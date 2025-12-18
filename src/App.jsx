@@ -41,7 +41,6 @@ export default function App() {
           pillarWidth={3.0}
           pillarHeight={0.4}
           noiseIntensity={0.5}
-          pillarRotation={0}
           mixBlendMode="normal"
           pillarRotation={30}
         />
