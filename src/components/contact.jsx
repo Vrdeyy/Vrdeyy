@@ -24,7 +24,7 @@ const contactMethods = [
     icon: Github,
     label: "GitHub",
     value: "vrdialip",
-    link: "https://github.com/vrdialip",
+    link: "https://github.com/Vrdeyy",
     color: "bg-gray-500/10 text-white"
   },
   {
