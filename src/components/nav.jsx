@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Home, Cpu, Briefcase, Mail, Star } from "lucide-react";
 
 const navItems = [
@@ -10,39 +10,23 @@ const navItems = [
   { id: "contact", label: "Contact", icon: Mail, href: "#contact" },
 ];
 
-function DockIcon({ mouseX, item, isActive, onClick }) {
-  const ref = useRef(null);
+function DockIcon({ item, isActive, onClick }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
   }, []);
 
-  const distance = useTransform(mouseX, (val) => {
-    if (isMobile) return 0;
-    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
-    return val - bounds.x - bounds.width / 2;
-  });
-
-  const widthSync = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
-  const width = useSpring(widthSync, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
-  });
-
   return (
-    <motion.div
-      ref={ref}
-      style={{ width: isMobile ? 40 : width }}
+    <div
       onClick={onClick}
-      className={`aspect-square rounded-full border backdrop-blur-md flex items-center justify-center relative group cursor-pointer transition-all
+      className={`w-[60px] h-[60px] rounded-full border backdrop-blur-md flex items-center justify-center relative group cursor-pointer transition-all duration-300
         ${isActive
-          ? "bg-[var(--color-accent)]/15 border-[var(--color-accent)]/40 shadow-[0_0_20px_var(--color-accent)]/20"
-          : "bg-white/10 border-white/20 hover:bg-white/20"
+          ? "bg-[var(--color-accent)]/15 border-[var(--color-accent)]/40 shadow-[0_0_20px_var(--color-accent)]/20 scale-110 -translate-y-1"
+          : "bg-white/10 border-white/20 hover:bg-white/20 hover:scale-110 hover:-translate-y-2 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.1)]"
         }`}
     >
-      <div className="w-full h-full flex items-center justify-center p-2">
+      <div className="w-full h-full flex items-center justify-center p-3">
         <item.icon
           className={`w-full h-full transition-colors ${isActive
             ? "text-[var(--color-accent)]"
@@ -68,12 +52,11 @@ function DockIcon({ mouseX, item, isActive, onClick }) {
           className="absolute -bottom-2 w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full"
         />
       )}
-    </motion.div>
+    </div>
   );
 }
 
 const Nav = () => {
-  const mouseX = useMotionValue(Infinity);
   const [activeTab, setActiveTab] = useState("home");
 
   useEffect(() => {
@@ -104,9 +87,7 @@ const Nav = () => {
 
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-end gap-4 pb-3">
-      <motion.div
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Infinity)}
+      <div
         className="flex h-16 items-end gap-4 rounded-2xl
           bg-[var(--color-bg-card)]/70
           border border-white/10
@@ -115,13 +96,12 @@ const Nav = () => {
         {navItems.map((item) => (
           <a key={item.id} href={item.href}>
             <DockIcon
-              mouseX={mouseX}
               item={item}
               isActive={activeTab === item.id}
             />
           </a>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };

@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Lanyard from "./Lanyard/Lanyard";
+import lanyardImg from "./Lanyard/Card - Copy.jpg";
 
 export default function Home() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className="container relative min-h-[calc(100vh-80px)] flex items-center pt-20 md:pt-0">
       <div className="flex flex-col md:flex-row items-center gap-12 w-full">
 
         {/* TEXT SECTION */}
-        <div className="flex-1 space-y-8 md:space-y-10 relative z-0 md:-translate-y-40">
+        <div className="flex-1 space-y-8 md:space-y-10 relative z-0 md:-translate-y-40 w-full">
 
           {/* SOFT GLOW */}
           <div className="absolute -top-32 -left-32 w-80 h-80 bg-[var(--color-accent)]/10 blur-[100px] rounded-full pointer-events-none" />
@@ -26,20 +39,62 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* HEADLINE */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight"
-          >
-            Hi, I'm
-            <br />
-            <span className="relative inline-block mt-2">
-              <span className="gradient-text">Verdi</span>
-              <span className="absolute left-0 -bottom-1 w-full h-[6px] bg-[var(--color-accent)]/30 blur-xl px-4" />
-            </span>
-          </motion.h1>
+          {/* MOBILE: CARD + HEADLINE SIDE BY SIDE */}
+          {isMobile ? (
+            <div className="flex items-center gap-4">
+              {/* CARD */}
+              <div style={{ perspective: '1000px' }}>
+                <motion.img
+                  src={lanyardImg}
+                  alt="Lanyard Card"
+                  initial={{ rotateY: 25, rotateX: 5, y: 0 }}
+                  animate={{
+                    y: [-10, 10, -10],
+                    rotateY: [25, 15, 25],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="w-[120px] object-contain rounded-2xl border-[1px] border-white/20"
+                  style={{
+                    filter: "drop-shadow(20px 20px 30px rgba(0,0,0,0.7))",
+                  }}
+                />
+              </div>
+
+              {/* HEADLINE */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-4xl font-bold leading-[0.95] tracking-tight"
+              >
+                Hi, I'm
+                <br />
+                <span className="relative inline-block mt-1">
+                  <span className="gradient-text">Verdi</span>
+                  <span className="absolute left-0 -bottom-1 w-full h-[6px] bg-[var(--color-accent)]/30 blur-xl px-4" />
+                </span>
+              </motion.h1>
+            </div>
+          ) : (
+            /* DESKTOP: HEADLINE ONLY */
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight"
+            >
+              Hi, I'm
+              <br />
+              <span className="relative inline-block mt-2">
+                <span className="gradient-text">Verdi</span>
+                <span className="absolute left-0 -bottom-1 w-full h-[6px] bg-[var(--color-accent)]/30 blur-xl px-4" />
+              </span>
+            </motion.h1>
+          )}
 
           {/* COPY */}
           <motion.p
@@ -83,12 +138,14 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* LANYARD CONTAINER */}
-        <div className="absolute md:relative top-[-120px] md:top-[-60px] right-[-25%] md:right-0 w-[130%] md:w-auto md:flex-1 h-[600px] md:h-[800px] z-20 pointer-events-none md:pointer-events-auto">
-          <div className="w-full h-full md:-translate-y-40 lg:translate-x-10 scale-85 md:scale-100 origin-top-right translate-x-20 md:translate-x-0">
-            <Lanyard position={[0, 0, 18]} gravity={[0, -120, 0]} />
+        {/* LANYARD CONTAINER - DESKTOP ONLY */}
+        {!isMobile && (
+          <div className="md:relative md:flex-1 h-[800px] z-20 md:pointer-events-auto">
+            <div className="w-full h-full md:-translate-y-40 lg:translate-x-10 scale-85 md:scale-100 origin-top-right">
+              <Lanyard position={[0, 0, 18]} gravity={[0, -120, 0]} />
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>
